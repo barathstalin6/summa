@@ -1,23 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Open in Apple Podcasts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button, a { display: block; margin: 10px 0; padding: 10px 15px; font-size: 16px; }
+  </style>
+</head>
+<body>
 
-<html><head></head><body>
-<title>Tele Spoof</title>
-  <h2>Tele Spoof POC</h2>
-<a href="itms-apps://">Click here </a>
-<a href="itms-appss://">Click here </a>
-<a href="itms://">Click here </a>
-<a href="itmss://">Click here </a>
-<a href="https://itunes.apple.com/app/">Click here </a>
-<a href="ibooks://">Click here </a>
-<a href="itms-books://">Click here </a>
-<a href="itms-bookss://">Click here </a>
-<a href="contact://">Click here </a>
-<a href="message://">Click here </a>
-<a href="sms://">Click here </a>
-<a href="music://">Click here </a>
-<a href="musics://">Click here </a>
-<a href="podcasts://">Click here </a>
-<a href="itms-podcasts://">Click here </a>
-<a href="podcast://">Click here </a>
-<a href="tel://">Click here </a>
+  <h1>Open Apple Podcasts App</h1>
 
-</body></html>
+  <!-- 1. Official Apple Podcasts HTTP Link (Recommended) -->
+  <a href="https://podcasts.apple.com/podcast/id123456789" target="_blank">
+    ✅ Open in Apple Podcasts (official HTTPS)
+  </a>
+
+  <!-- 2. podcast:// Deeplink via user click (not iframe safe) -->
+  <button onclick="window.location.href='podcast://123456789'">
+    🔗 Try opening via podcast:// (only works in user click, not iframe)
+  </button>
+
+  <!-- 3. podcast:// with fallback after delay -->
+  <button onclick="openPodcastAppWithFallback()">
+    🚀 Try opening Podcasts App with fallback
+  </button>
+
+  <script>
+    function openPodcastAppWithFallback() {
+      window.location = 'podcast://123456789';
+      // Fallback after 2 seconds if app doesn't open
+      setTimeout(function() {
+        window.location = 'https://podcasts.apple.com/podcast/id123456789';
+      }, 2000);
+    }
+  </script>
+
+  <!-- 4. iframe method (will fail in most browsers) -->
+  <h3>🚫 This iframe attempt below is expected to fail (shown for testing):</h3>
+  <iframe src="podcast://123456789" width="0" height="0" style="border: none;"></iframe>
+
+</body>
+</html>
+
