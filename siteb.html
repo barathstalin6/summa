@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Site B – Third Party</title>
+<style>
+body { font-family: monospace; }
+pre { background:#000; color:#0f0; padding:10px; }
+</style>
+</head>
+<body>
+
+<h3>Site B (3rd-Party iframe)</h3>
+<pre id="log"></pre>
+
+<script>
+const log = m => logEl.textContent += m + "\n";
+const logEl = document.getElementById("log");
+
+/* Storage Access API – REAL CONTEXT */
+async function storageAccess() {
+  if (!document.requestStorageAccess) {
+    log("Storage Access API not supported");
+    return;
+  }
+  try {
+    await document.requestStorageAccess();
+    log("Storage Access GRANTED");
+  } catch {
+    log("Storage Access DENIED");
+  }
+}
+
+/* Third-Party Cookie test */
+function cookieTest() {
+  document.cookie = "tp_test=1; SameSite=None; Secure";
+  log("Cookie written (check DevTools → Application → Cookies)");
+}
+
+/* Idle Detection */
+async function idle() {
+  if (!("IdleDetector" in window)) {
+    log("Idle Detection not supported");
+    return;
+  }
+  const d = new IdleDetector();
+  await d.start({ threshold: 60 });
+  d.onchange = () =>
+    log(`Idle: ${d.userState}, Screen: ${d.screenState}`);
+  log("Idle Detection started");
+}
+
+/* Focus / Visibility */
+document.addEventListener("visibilitychange", () =>
+  log("Visibility: " + document.visibilityState)
+);
+window.addEventListener("focus", () => log("Focused"));
+window.addEventListener("blur", () => log("Blurred"));
+
+/* File System Access */
+async function fs() {
+  if (!window.showOpenFilePicker) {
+    log("FS Access not supported");
+    return;
+  }
+  const [h] = await showOpenFilePicker();
+  const f = await h.getFile();
+  log("Selected file: " + f.name);
+}
+
+/* Private Network Access (best-effort) */
+async function pna() {
+  try {
+    await fetch("http://192.168.0.1", { mode: "no-cors" });
+    log("PNA fetch attempted (check DevTools)");
+  } catch {
+    log("PNA blocked");
+  }
+}
+
+/* AMP by AGSA detection */
+function amp() {
+  log("AMP Viewer detected: " + ("viewerState" in window));
+}
+</script>
+
+<button onclick="storageAccess()">Storage Access API</button>
+<button onclick="cookieTest()">3P Cookie Test</button>
+<button onclick="idle()">Idle Detection</button>
+<button onclick="fs()">File System Access</button>
+<button onclick="pna()">Private Network Access</button>
+<button onclick="amp()">AMP by AGSA</button>
+
+</body>
+</html>
