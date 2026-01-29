@@ -1,0 +1,23 @@
+{
+  "name": "Pay with BobBucks",
+  "short_name": "BobBucks",
+  "icons": [{
+  	"src": "tree.png",
+  	"sizes": "48x48",
+  	"type": "image/png"
+  }],
+  "serviceworker": {
+    "src": "sw-bobbucks.js",
+    "use_cache": false
+  },
+  "prefer_related_applications": true,
+  "related_applications": [{
+      "platform": "play",
+      "id": "dev.bobbucks",
+      "min_version": "1",
+      "fingerprints": [{
+          "type": "sha256_cert",
+          "value": "20:C9:72:AE:21:F8:C3:E8:0C:14:06:23:20:5B:E4:42:51:22:90:77:B5:15:7A:3B:FB:2A:23:99:67:DB:57:F9"
+      }]
+  }]
+}
