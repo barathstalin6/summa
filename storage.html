@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Storage API PoC</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+    }
+    button {
+      margin: 6px 0;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Browser Storage API PoC</h2>
+
+<button onclick="testCookies()">Test Cookies</button>
+<button onclick="testLocalStorage()">Test localStorage</button>
+<button onclick="testSessionStorage()">Test sessionStorage</button>
+<button onclick="testIndexedDB()">Test IndexedDB</button>
+<button onclick="testStorageAccessAPI()">Test Storage Access API</button>
+
+<pre id="log"></pre>
+
+<script>
+  const log = msg => {
+    document.getElementById("log").textContent += msg + "\n";
+  };
+
+  function testCookies() {
+    try {
+      document.cookie = "poc_cookie=hello; SameSite=None; Secure";
+      log("✅ Cookie set: " + document.cookie);
+    } catch (e) {
+      log("❌ Cookie failed: " + e);
+    }
+  }
+
+  function testLocalStorage() {
+    try {
+      localStorage.setItem("poc_key", "hello");
+      log("✅ localStorage: " + localStorage.getItem("poc_key"));
+    } catch (e) {
+      log("❌ localStorage blocked: " + e);
+    }
+  }
+
+  function testSessionStorage() {
+    try {
+      sessionStorage.setItem("poc_key", "hello");
+      log("✅ sessionStorage: " + sessionStorage.getItem("poc_key"));
+    } catch (e) {
+      log("❌ sessionStorage blocked: " + e);
+    }
+  }
+
+  function testIndexedDB() {
+    try {
+      const req = indexedDB.open("poc-db", 1);
+      req.onupgradeneeded = () => {
+        req.result.createObjectStore("test");
+      };
+      req.onsuccess = () => {
+        log("✅ IndexedDB доступен");
+        req.result.close();
+      };
+      req.onerror = () => {
+        log("❌ IndexedDB error");
+      };
+    } catch (e) {
+      log("❌ IndexedDB blocked: " + e);
+    }
+  }
+
+  async function testStorageAccessAPI() {
+    if (!document.hasStorageAccess) {
+      log("⚠️ Storage Access API not supported in this browser");
+      return;
+    }
+
+    const hasAccess = await document.hasStorageAccess();
+    log("ℹ️ hasStorageAccess(): " + hasAccess);
+
+    if (!hasAccess && document.requestStorageAccess) {
+      try {
+        await document.requestStorageAccess();
+        log("✅ Storage access granted");
+      } catch (e) {
+        log("❌ Storage access denied: " + e);
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

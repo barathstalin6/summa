@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Local Network Permission PoC</title>
+</head>
+<body>
+  <h2>Local Network Access Test</h2>
+  <button onclick="test()">Trigger Permission</button>
+
+  <script>
+    function test() {
+      fetch("http://192.168.1.1", {
+        method: "GET",
+        mode: "cors"
+      })
+      .then(res => console.log("Response:", res))
+      .catch(err => console.error("Error:", err));
+    }
+  </script>
+</body>
+</html>
